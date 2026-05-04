@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AfriEarn – Inscription</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ====================================================
+  // ✅ CONFIGURATION FIREBASE MISE À JOUR (AFRIEARN)
+  // ====================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyBNc2ao4rcdrmgsk4vBA2-UPm1XUGhkjwI",
+    authDomain: "afriearn-d8032.firebaseapp.com",
+    projectId: "afriearn-d8032",
+    storageBucket: "afriearn-d8032.firebasestorage.app",
+    messagingSenderId: "720837721766",
+    appId: "1:720837721766:web:8d739a3e5b8830861fbe67"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window._auth = auth;
+  window._db = db;
+  window._createUser = createUserWithEmailAndPassword;
+  window._signIn = signInWithEmailAndPassword;
+  window._onAuthStateChanged = onAuthStateChanged;
+  window._doc = doc;
+  window._setDoc = setDoc;
+  window._getDoc = getDoc;
+  window._addDoc = addDoc;
+  window._collection = collection;
+  window._serverTimestamp = serverTimestamp;
+  window._firebaseReady = true;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user && window.location.href.includes('register')) {
+      window.location.href = 'afriearn-dashboard.html';
+    }
+  });
+</script>
+
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --surface: #ffffff;
+    --accent: #e85d26;
+    --accent2: #2d6a4f;
+    --gold: #f4a61e;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e5e0d5;
+    --radius: 18px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(232,93,38,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(45,106,79,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .pattern {
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(232,93,38,0.03) 40px,
+      rgba(232,93,38,0.03) 41px
+    );
+    pointer-events: none;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .logo-wrap {
+    text-align: center;
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s ease;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 50px;
+    margin-bottom: 12px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  .logo-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-name span { color: var(--gold); }
+
+  .tagline {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+
+  .tab.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus { border-color: var(--accent); background: #fff; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover { background: #cf4e1e; transform: translateY(-1px); }
+
+  .bonus-badge {
+    background: linear-gradient(135deg, rgba(244,166,30,0.12), rgba(232,93,38,0.08));
+    border: 1px solid rgba(244,166,30,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-mini {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .stat-mini-val {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .stat-mini-label { font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .alert.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; display: block; }
+  .alert.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; display: block; }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="pattern"></div>
+
+<div class="container">
+  <div class="logo-wrap">
+    <div class="logo-badge">
+      <div class="logo-icon">🌍</div>
+      <div class="logo-name">Afri<span>Earn</span></div>
+    </div>
+    <div class="tagline">Gagnez de l'argent en complétant des sondages</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-mini">
+      <div class="stat-mini-val">4,820</div>
+      <div class="stat-mini-label">Membres actifs</div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-val">$38K</div>
+      <div class="stat-mini-label">Total versé</div>
+    </div>
+    <div class="stat-mini">
+      <div class="stat-mini-val">Mobile</div>
+      <div class="stat-mini-label">Money accepté</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" id="tab-register" onclick="switchTab('register')">S'inscrire</div>
+      <div class="tab" id="tab-login" onclick="switchTab('login')">Se connecter</div>
+    </div>
+
+    <div class="bonus-badge" id="bonus-badge">
+      <span class="bonus-icon">🎁</span>
+      <div>Bonus de bienvenue : <strong>+500 FCFA</strong> à l'inscription !</div>
+    </div>
+
+    <div class="alert" id="alert-box"></div>
+
+    <!-- REGISTER FORM -->
+    <div id="form-register">
+      <div class="form-group">
+        <label class="form-label">Nom complet</label>
+        <input class="form-input" type="text" id="reg-name" placeholder="Ex: Kouamé Jean">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="votre@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Numéro Mobile Money</label>
+        <input class="form-input" type="tel" id="reg-phone" placeholder="07 XX XX XX XX">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input class="form-input" type="password" id="reg-password" placeholder="Minimum 6 caractères">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Code parrain (optionnel)</label>
+        <input class="form-input" type="text" id="reg-ref" placeholder="Code d'un ami">
+      </div>
+      <button class="btn-primary" onclick="doRegister()" id="btn-register">Créer mon compte 🚀</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="login-email" placeholder="votre@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input class="form-input" type="password" id="login-password" placeholder="Votre mot de passe">
+      </div>
+      <button class="btn-primary" onclick="doLogin()" id="btn-login">Se connecter →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(tab) {
+    const isRegister = tab === 'register';
+    document.getElementById('tab-register').classList.toggle('active', isRegister);
+    document.getElementById('tab-login').classList.toggle('active', !isRegister);
+    document.getElementById('form-register').style.display = isRegister ? 'block' : 'none';
+    document.getElementById('form-login').style.display = isRegister ? 'none' : 'block';
+    document.getElementById('bonus-badge').style.display = isRegister ? 'flex' : 'none';
+  }
+
+  function showAlert(msg, type) {
+    const box = document.getElementById('alert-box');
+    box.textContent = msg;
+    box.className = 'alert ' + type;
+  }
+
+  async function doRegister() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+    const password = document.getElementById('reg-password').value;
+
+    if (!name || !email || !phone || !password) {
+      showAlert('⚠️ Veuillez remplir tous les champs.', 'error'); return;
+    }
+
+    try {
+      const cred = await window._createUser(window._auth, email, password);
+      await window._setDoc(window._doc(window._db, 'users', cred.user.uid), {
+        name, email, phone, balance: 500, joinedAt: window._serverTimestamp()
+      });
+      showAlert('✅ Succès ! Redirection...', 'success');
+      setTimeout(() => { window.location.href = 'afriearn-dashboard.html'; }, 1500);
+    } catch(e) {
+      showAlert('❌ Erreur: ' + e.message, 'error');
+    }
+  }
+
+  async function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    try {
+      await window._signIn(window._auth, email, password);
+      showAlert('✅ Connexion réussie !', 'success');
+      setTimeout(() => { window.location.href = 'afriearn-dashboard.html'; }, 1000);
+    } catch(e) {
+      showAlert('❌ Erreur: ' + e.message, 'error');
+    }
+  }
+</script>
+</body>
+</html>
